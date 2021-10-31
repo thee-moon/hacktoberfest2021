@@ -1,0 +1,61 @@
+class Solution {
+public:
+    long long inf =  205*205*1e9;
+    const int mod = 1e9 +7;
+    int countPaths(int n, vector<vector<int>>& roads) {
+        
+        // if(n==1) return 0;
+        
+        using pii = pair<long long,long long>; 
+        
+        priority_queue<pii, vector<pii> ,greater<pii> >q;
+        
+        vector<pii>adj[n];
+        
+        for(auto el:roads){
+            adj[el[0]].push_back({el[1],el[2]});
+            adj[el[1]].push_back({el[0],el[2]});
+        }
+        
+        vector<long long>dist(n,inf);
+        vector<bool>vis(n,false);
+        vector<long long>paths(n,0);
+        paths[0] = 1;
+        dist[0] = 0;
+        q.push({dist[0],0});
+    
+        while(!q.empty()){
+                
+            pii p = q.top();    
+            long long node = p.second;
+            long long d = p.first;
+            q.pop();
+            
+            if(vis[node]) continue;
+            
+            vis[node]=true;
+            
+            for(auto ch: adj[node]){
+                
+                if(dist[ch.first]>dist[node]+ch.second){
+                    dist[ch.first]=dist[node]+ch.second;
+                    q.push({dist[ch.first],ch.first});
+                    paths[ch.first] = paths[node];
+                }else if( dist[ch.first]==dist[node]+ch.second){
+                    paths[ch.first] += paths[node];
+                    paths[ch.first]%=mod;
+                }
+                
+            }
+             
+        }
+        
+//         for(auto el:paths){
+//             cout<<el<<" ";
+//         }
+        
+        return paths[n-1];
+ 
+        
+    }
+};
